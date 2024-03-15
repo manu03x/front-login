@@ -1,24 +1,34 @@
-import logo from './logo.svg';
 import './App.css';
+import React from 'react';
+import Header from './components/Header';
+import Signup from './components/Signup';
+import Login from './components/Login';
+import Welcome from './components/Welcome';
+import Admin from './components/Admin';
+import Inicio from './components/Inicio';
+import { Route, Routes } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 function App() {
+  const isLoggedIn = useSelector(state => state.auth.isLoggedIn)
+  const isAdmin = useSelector(state => state.admin.isAdmin)
+  console.log(isLoggedIn)
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <React.Fragment>
+    <header>
+      <Header />
+    </header>
+
+    <main>
+      <Routes>
+      <Route path='/' element={<Inicio/>}/>
+        <Route path='/login' element={<Login/>}/>
+        <Route path='/signup' element={<Signup/>}/>
+        <Route path='/user' element={<Welcome/>}/>
+        {isAdmin && <Route path='/admin' element={<Admin/>}/>} {" "}
+      </Routes>
+    </main>
+    </React.Fragment>
   );
 }
 
