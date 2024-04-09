@@ -12,7 +12,7 @@ import { useSelector } from 'react-redux';
 function App() {
   const isLoggedIn = useSelector(state => state.auth.isLoggedIn)
   const isAdmin = useSelector(state => state.admin.isAdmin)
-  console.log(isLoggedIn)
+  console.log(isAdmin)
   return (
     <React.Fragment>
     <header>
@@ -25,7 +25,7 @@ function App() {
         <Route path='/login' element={<Login/>}/>
         <Route path='/signup' element={<Signup/>}/>
         <Route path='/user' element={<Welcome/>}/>
-        {isAdmin && <Route path='/admin' element={<Admin/>}/>} {" "}
+        <Route path='/admin' element={<Admin/>}/>
       </Routes>
     </main>
     </React.Fragment>

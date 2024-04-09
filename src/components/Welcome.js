@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Typography, Button, ThemeProvider, CssBaseline, createTheme } from '@mui/material';
+import { Container, Typography, Button, ThemeProvider, CssBaseline, createTheme, TextField } from '@mui/material';
 import '@fontsource/roboto';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -13,20 +13,22 @@ let firstRender = true;
 const Welcome = () => {
     const dispatch = useDispatch();
     const history = useNavigate();
-    const [user, setUser] = useState();
+    const [user, setUser] = useState({
+        name: '',
+        email: '',
+        password: '',
+    });
 
-    const sendRequest = async() => {
+    const sendRequest = async () => {
         try {
             const res = await axios.get('http://localhost:5000/api/user', {
                 withCredentials: true
             });
-    
             const data = await res.data;
-    
             if (!data) {
+                history('/login');
                 throw new Error("No se pudo obtener la información del usuario.");
             }
-    
             return data;
         } catch (error) {
             console.log(error)
@@ -40,6 +42,7 @@ const Welcome = () => {
                 const data = await sendRequest();
                 if (data) {
                     setUser(data.user);
+                    console.log('Info del user')
                     dispatch(authActions.login());
                 }
             } catch (error) {
@@ -56,28 +59,45 @@ const Welcome = () => {
                 console.log(res.data); // Maneja los datos de la respuesta como desees
             } catch (error) {
                 console.error(error); // Maneja el error de la solicitud
+                handleLogout()
             }
         };
 
-        if(firstRender) {
+        if (firstRender) {
             fetchData();
+            firstRender = false;
         }
 
         const interval = setInterval(() => {
-            refresh(); 
+            refresh();
         }, 1000 * 60 * .25);
 
         return () => clearInterval(interval);
+    }, [dispatch, history]);
 
-    
-
-
-    }, [dispatch])
     const handleLogout = () => {
         // Lógica para cerrar sesión...
         history("/login");
     };
 
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setUser({ ...user, [name]: value });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const userId = user._id; // Asigna el ID del usuario adecuado
+        try {
+            const res = await axios.put(`http://localhost:5000/api/user/${userId}`, user, {
+                withCredentials: true
+            });
+
+        } catch (error) {
+            console.error('Error updating user:', error);
+        }
+    };
+    
     const theme = createTheme({
         palette: {
             mode: 'dark',
@@ -103,6 +123,40 @@ const Welcome = () => {
                 <Typography variant="body1" paragraph>
                     Gracias por registrarte en nuestra aplicación.
                 </Typography>
+                <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+                    <TextField
+                        name="name"
+                        label="Nombre"
+                        variant="outlined"
+                        margin="normal"
+                        value={user.name || ''}
+                        onChange={handleChange}
+                        fullWidth
+                    />
+                    <TextField
+                        name="email"
+                        type="email"
+                        label="Correo Electrónico"
+                        variant="outlined"
+                        margin="normal"
+                        value={user.email || ''}
+                        onChange={handleChange}
+                        fullWidth
+                    />
+                    <TextField
+                        name="password"
+                        type="password"
+                        label="Contraseña"
+                        variant="outlined"
+                        margin="normal"
+                        value={user.password || ''}
+                        onChange={handleChange}
+                        fullWidth
+                    />
+                    <Button type="submit" variant="contained" color="primary" style={{ marginTop: '20px' }}>
+                        Guardar Cambios
+                    </Button>
+                </form>
             </Container>
         </ThemeProvider>
     );

@@ -4,7 +4,7 @@ import { AppBar, Toolbar, Typography, Button, ThemeProvider, CssBaseline, create
 import { Link } from 'react-router-dom'; // Importa Link desde react-router-dom
 import '@fontsource/roboto';
 import axios from "axios";
-import { authActions } from "../store";
+import { authActions , adminActions} from "../store";
 
 axios.defaults.withCredentials = true
 
@@ -28,7 +28,10 @@ const Header = () => {
 
     const handleButtonClick = (button) => {
         if(button == 'logout') {
-            logoutReq().then(() => dispatch(authActions.logout()))
+            logoutReq().then(() => {
+                dispatch(authActions.logout())
+                dispatch(adminActions.logoutAdmin())
+            })
         }
         setActiveButton(button);
     };
