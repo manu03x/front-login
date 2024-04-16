@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { adminActions } from "../store";
+import { ProductAdmin } from "./ProductAdmin"
 
 axios.defaults.withCredentials = true;
 
@@ -19,7 +20,7 @@ const Admin = () => {
 
     const sendRequest = async () => {
         try {
-            const res = await axios.get('http://localhost:5000/api/admin', {
+            const res = await axios.get('https://login-mern-77k1.onrender.com/api/admin', {
                 withCredentials: true
             });
             const data = await res.data;
@@ -47,7 +48,7 @@ const Admin = () => {
 
     const refresh = async () => {
         try {
-            const res = await axios.get('http://localhost:5000/api/refresh', {
+            const res = await axios.get('https://login-mern-77k1.onrender.com/api/refresh', {
                 withCredentials: true
             });
             console.log(res.data); // Maneja los datos de la respuesta como desees
@@ -59,7 +60,7 @@ const Admin = () => {
 
     const getUsers = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/api/users');
+            const response = await axios.get('https://login-mern-77k1.onrender.com/api/users');
             setUsers(response.data.users);
         } catch (error) {
             console.error('Error fetching users:', error);
@@ -74,7 +75,7 @@ const Admin = () => {
         getUsers()
         const interval = setInterval(() => {
             refresh();
-        }, 1000 * 60 * .25);
+        }, 1000 * 60 * 59);
         return () => clearInterval(interval);
     }, [dispatch])
 
@@ -85,7 +86,7 @@ const Admin = () => {
 
     const handleToggleStatus = async (userId) => {
         try {
-            const response = await axios.put(`http://localhost:5000/api/admin/toggleStatus/${userId}`);
+            const response = await axios.put(`https://login-mern-77k1.onrender.com/api/admin/toggleStatus/${userId}`);
             if (response.status === 200) {
                 setUsers(users.map(user =>
                     user._id === userId ? { ...user, status: user.status === 1 ? 0 : 1 } : user
@@ -100,7 +101,7 @@ const Admin = () => {
 
     const handleRoleChange = async (userId, role) => {
         try {
-            const response = await axios.put(`http://localhost:5000/api/admin/changeRole/${userId}`, { role });
+            const response = await axios.put(`https://login-mern-77k1.onrender.com/api/admin/changeRole/${userId}`, { role });
             if (response.status === 200) {
                 setUsers(users.map(user =>
                     user._id === userId ? { ...user, role } : user
@@ -129,51 +130,57 @@ const Admin = () => {
     });
 
     return (
-        <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <Container maxWidth="md" style={{ marginTop: '50px' }}>
-                <Typography variant="h4" gutterBottom>
-                    Lista de Usuarios
-                </Typography>
-                <TableContainer component={Paper}>
-                    <Table aria-label="user table">
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Nombre</TableCell>
-                                <TableCell>Email</TableCell>
-                                <TableCell>Status</TableCell>
-                                <TableCell>Rol</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {users.map((user) => (
-                                <TableRow key={user._id}>
-                                    <TableCell>{user.name}</TableCell>
-                                    <TableCell>{user.email}</TableCell>
-                                    <TableCell>
-                                        <Checkbox
-                                            checked={user.status === 1}
-                                            onChange={() => handleToggleStatus(user._id)}
-                                        />
-                                    </TableCell>
-                                    <TableCell>
-                                        <FormControl fullWidth>
-                                            <Select
-                                                value={user.role || 'user'}
-                                                onChange={(e) => handleRoleChange(user._id, e.target.value)}
-                                            >
-                                                <MenuItem value="admin">Admin</MenuItem>
-                                                <MenuItem value="user">User</MenuItem>
-                                            </Select>
-                                        </FormControl>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            </Container>
-        </ThemeProvider>
+<ThemeProvider theme={theme}>
+  <CssBaseline />
+  <Container maxWidth="md" style={{ marginTop: '50px' }}>
+    <Typography variant="h4" gutterBottom>
+      Lista de Usuarios
+    </Typography>
+    <TableContainer component={Paper}>
+      <Table aria-label="user table">
+        <TableHead>
+          <TableRow>
+            <TableCell>Nombre</TableCell>
+            <TableCell>Email</TableCell>
+            <TableCell>Status</TableCell>
+            <TableCell>Rol</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {users.map((user) => (
+            <TableRow key={user._id}>
+              <TableCell>{user.name}</TableCell>
+              <TableCell>{user.email}</TableCell>
+              <TableCell>
+                <Checkbox
+                  checked={user.status === 1}
+                  onChange={() => handleToggleStatus(user._id)}
+                />
+              </TableCell>
+              <TableCell>
+                <FormControl fullWidth>
+                  <Select
+                    value={user.role || 'user'}
+                    onChange={(e) => handleRoleChange(user._id, e.target.value)}
+                  >
+                    <MenuItem value="admin">Admin</MenuItem>
+                    <MenuItem value="user">User</MenuItem>
+                  </Select>
+                </FormControl>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  </Container>
+
+  {/* Container para ProductAdmin */}
+  <Container maxWidth="md" style={{ marginTop: '50px', marginBottom: '30px' }}>
+    <ProductAdmin />
+  </Container>
+</ThemeProvider>
+
     );
 }
 

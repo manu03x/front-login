@@ -6,6 +6,7 @@ import axios from "axios";
 import {useDispatch, useSelector} from "react-redux"
 import { authActions , adminActions} from "../store";
 
+axios.defaults.withCredentials = true
 const Login = () => {
     const dispatch = useDispatch()
     
@@ -50,7 +51,7 @@ const Login = () => {
     };
 
     const sendRequest = async () => {
-        const res = await axios.post('http://localhost:5000/api/login', {
+        const res = await axios.post('https://login-mern-77k1.onrender.com/api/login', {
             email: inputs.email,
             password: inputs.password
         });

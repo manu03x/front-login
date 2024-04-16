@@ -15,7 +15,7 @@ const Header = () => {
     const [activeButton, setActiveButton] = useState(null);
 
     const logoutReq = async() => {
-        const res = await axios.post("http://localhost:5000/api/logout", null , {
+        const res = await axios.post("https://login-mern-77k1.onrender.com/api/logout", null , {
             withCredentials : true
         })
 
@@ -57,7 +57,7 @@ const Header = () => {
             <AppBar position="static">
                 <Toolbar>
                     <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                        Your App Name
+                                E-commerce
                     </Typography>
                     {!isLoggedIn && <> <Button
                         color={activeButton === 'login' ? 'secondary' : 'inherit'}

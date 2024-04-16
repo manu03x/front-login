@@ -3,7 +3,7 @@ import { Container, Typography, TextField, Button, Snackbar, ThemeProvider, CssB
 import '@fontsource/roboto';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
+axios.defaults.withCredentials = true
 const Signup = () => {
     const [inputs, setInputs] = useState({
         name:"",
@@ -40,7 +40,7 @@ const Signup = () => {
     };
 
     const sendRequest = async () => {
-        const res = await axios.post('http://localhost:5000/api/signup', {
+        const res = await axios.post('https://login-mern-77k1.onrender.com/api/signup', {
             name: inputs.name,
             email: inputs.email,
             password: inputs.password
